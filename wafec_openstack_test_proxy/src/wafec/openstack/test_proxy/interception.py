@@ -1,8 +1,10 @@
 import psutil
+import os
 
-from ._configuration import interception_config
-from ._common import safe_run_async
 from .utility import Utility
+from wafec.openstack.testlib.interception import generate_key
+from wafec.openstack.testlib.clients import InterceptionAgentClient
+from ._configuration import interception_config
 
 __all__ = [
     'Interception'
@@ -14,5 +16,31 @@ class Interception(object):
     def add_proxy_interception_info(name, x=None, trace=None):
         p = psutil.Process()
         ps = p.name()
-        data = {'ps': ps, 'name': name, 'x': Utility.fullname(x), 'trace': trace}
-        safe_run_async(url=f'{interception_config.url}api/proxy/interception/add', json=data)
+        kwargs = {
+            'ps': ps,
+            'name': name,
+            'x': Utility.fullname(x),
+            'trace': trace,
+            'asynchronous': True
+        }
+        client = InterceptionAgentClient(interception_config.url)
+        client.post(**kwargs)
+
+    @staticmethod
+    def should_handle_fault(name, x, trace):
+        if os.path.exists(interception_config.dat_file):
+            p = psutil.Process()
+            ps = p.name()
+            key = generate_key(name, x, trace, ps)
+            with open(interception_config.dat_file, 'r') as dat_file:
+                lines = dat_file.readlines()
+            if lines:
+                line_parts = lines[0].split(' ')
+                if line_parts and len(line_parts) > 1:
+                    dat_key = line_parts[0]
+                    if dat_key == key:
+                        return line_parts[1]
+        return False
+
+
+

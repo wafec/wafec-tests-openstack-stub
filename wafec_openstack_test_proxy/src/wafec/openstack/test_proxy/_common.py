@@ -7,7 +7,7 @@ from ._base import white_list, simple_types
 
 __all__ = [
     'is_proxy_allowed',
-    'safe_run_async'
+    'safe_requests_post_run_async'
 ]
 
 
@@ -29,6 +29,6 @@ def safe_run(target, args, kwargs):
         pass
 
 
-def safe_run_async(*args, **kwargs):
+def safe_requests_post_run_async(*args, **kwargs):
     thread = threading.Thread(target=safe_run, args=(requests.post, args, kwargs))
     thread.start()
