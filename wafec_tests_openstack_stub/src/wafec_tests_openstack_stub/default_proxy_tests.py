@@ -7,7 +7,7 @@ import json
 from .default_proxy import DefaultProxy
 from ._base import white_list
 from ._default_proxy_iterator import DefaultProxyIterator
-from wafec.openstack.test_proxy import create_proxy
+from wafec_tests_openstack_stub import create_proxy
 
 
 class CreateProxyTests(unittest.TestCase):

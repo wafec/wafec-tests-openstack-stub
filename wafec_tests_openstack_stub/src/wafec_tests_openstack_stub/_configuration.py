@@ -1,6 +1,7 @@
-import platform
 import os
 import configparser
+
+from wafec_tests_openstack_base.utils import first_existent_path
 
 __all__ = [
     'interception_config',
@@ -8,6 +9,11 @@ __all__ = [
 ]
 
 BASE_CONFIG_DIR = '/usr/wafec'
+PROXY_INI_FILES = [
+    'stub.ini',
+    'resources/stub.ini',
+    f'{BASE_CONFIG_DIR}/stub.ini'
+]
 
 
 class InterceptionConfiguration(object):
@@ -19,8 +25,8 @@ class InterceptionConfiguration(object):
 interception_config = InterceptionConfiguration()
 
 
-path = f'{BASE_CONFIG_DIR}/proxy.ini'
-if os.path.exists(path):
+path = first_existent_path(PROXY_INI_FILES)
+if path and os.path.exists(path):
     config = configparser.ConfigParser()
     config.read(path)
     interception_config.url = config.get('interception', 'url', fallback=interception_config.url)

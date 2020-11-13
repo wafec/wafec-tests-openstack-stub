@@ -13,12 +13,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
     ],
-    install_requires=[
-        'wrapt>=1.12.1',
-        'Flask>=1.1.2',
-        'requests>=2.0.0',
-        'psutil>=5.7.0'
-    ],
     entry_points={
         'console_scripts': [
             
